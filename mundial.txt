@@ -1,0 +1,4 @@
+CAMPEON:Argentina
+EQUIPO:Argentina
+EQUIPO:Francia
+EQUIPO:Brasil
