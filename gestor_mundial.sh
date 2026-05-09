@@ -36,6 +36,11 @@ registrar_equipo() {
         echo "No puede estar vacío"
         return
     fi
+    
+    if  es_numero "$nombre"; then
+        echo "Los equipos no pueden ser números"
+        return
+    fi
 
     cantidad=$(grep "^EQUIPO:" "$ARCHIVO" | wc -l)
 
@@ -52,28 +57,50 @@ registrar_equipo() {
     fi
 }
 
-registrar_partido() {
+registrar_partido() { 
     read -p "Equipo 1: " eq1
     read -p "Goles equipo 1: " g1
+
+        if ! existe_equipo "$eq1" && ! es_numero "$g1"; then
+            echo "Ningún dato es válido"
+            return
+        fi
+
+        if ! existe_equipo "$eq1"; then
+            echo "Equipo 1 no existe"
+            return
+        fi
+
+        if ! es_numero "$g1"; then
+            echo "Los goles deben ser números"
+            return
+        fi
     read -p "Equipo 2: " eq2
     read -p "Goles equipo 2: " g2
+
+        if ! existe_equipo "$eq2" && ! es_numero "$g2"; then
+            echo "Ningún dato es válido"
+            return
+        fi
+
+        if ! existe_equipo "$eq2"; then
+            echo "Equipo 2 no existe"
+            return
+        fi
+
+        if ! es_numero "$g2"; then
+            echo "Los goles deben ser números"
+            return
+        fi
+
 
     if [ -z "$eq1" ] || [ -z "$eq2" ] || [ -z "$g1" ] || [ -z "$g2" ]; then
         echo "Datos inválidos"
         return
     fi
 
-    if ! existe_equipo "$eq1" || ! existe_equipo "$eq2"; then
-        echo "Uno o ambos equipos no existen"
-        return
-    fi
 
-    if ! es_numero "$g1" || ! es_numero "$g2"; then
-        echo "Los goles deben ser números"
-        return
-    fi
-
-    echo "PARTIDO:$eq1 $g1 $eq2 $g2" >> "$ARCHIVO"
+    echo "PARTIDO:$eq1 vs $eq2 ($g1 - $g2)" >> "$ARCHIVO"
     echo "Partido registrado correctamente"
 }
 
@@ -135,7 +162,14 @@ while true; do
         5) ver_historial ;;
         6) buscar_equipo ;;
         7) cantidad_partidos ;;
-        8) echo "Saliendo..."; break ;;
+        8) echo -e "Saliendo...\n"; sleep 0.7;
+echo "=========== Autores ===========
+=                             =
+=  Mara Maqueira (354709)     =
+=  Brian del Pino (329242)    =
+=  Facundo Martinez (292207)  =
+=                             =
+===============================";  break ;;
         *) echo "Opción inválida" ;;
     esac
 done
