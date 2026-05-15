@@ -12,7 +12,7 @@ inicializar_archivo() {
 }
 
 es_numero() {
-    [[ "$1" =~ ^[0-9]+$ ]]
+    [[ "$1" =~ [0-9] ]]
 }
 
 existe_equipo() {
@@ -94,9 +94,9 @@ registrar_partido() {
         fi
 
 
-    if [ -z "$eq1" ] || [ -z "$eq2" ] || [ -z "$g1" ] || [ -z "$g2" ]; then
-        echo "Datos inválidos"
-        return
+    if [ "$eq1" = "$eq2" ]; then
+    echo "Un equipo no puede jugar contra sí mismo"
+    return
     fi
 
 
