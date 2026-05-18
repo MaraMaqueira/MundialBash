@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Colores
+ROJO='\033[1;31m'
+VERDE='\033[1;32m'
+AMARILLO='\033[1;33m'
+BLANCO='\033[1;37m'
+CELESTE='\033[1;36m'
+RESET='\033[0m'
+
 ARCHIVO="mundial.txt"
 
 inicializar_archivo() {
@@ -20,40 +28,47 @@ existe_equipo() {
 }
 
 listar_equipos() {
-    echo "----- EQUIPOS -----"
+    echo -e "${BLANCO}----- EQUIPOS -----${RESET}"
     grep "^EQUIPO:" "$ARCHIVO" | cut -d":" -f2 | nl
 }
 
 mostrar_campeon() {
-    echo "----- CAMPEÓN ACTUAL -----"
-    grep "^CAMPEON:" "$ARCHIVO" | cut -d":" -f2
+    echo -e "${BLANCO}----- CAMPEÓN ACTUAL -----${RESET}"
+    campeon=$(grep "^CAMPEON:" "$ARCHIVO" | cut -d":" -f2 | tr '[:lower:]' '[:upper:]')
+
+    if [ "$campeon" = "ARGENTINA" ]; then
+        # A=blanca R=celeste G=blanca E=celeste N=amarilla T=blanca I=celeste N=blanca A=celeste
+        echo -e "\n        ${BLANCO}A${RESET}${CELESTE}R${RESET}${BLANCO}G${RESET}${CELESTE}E${RESET}${AMARILLO}N${RESET}${BLANCO}T${RESET}${CELESTE}I${RESET}${BLANCO}N${RESET}${CELESTE}A${RESET}"
+    else
+        echo "$campeon"
+    fi
 }
 
 registrar_equipo() {
     read -p "Nombre del equipo: " nombre
 
     if [ -z "$nombre" ]; then
-        echo "No puede estar vacío"
+        echo -e "${ROJO}No puede estar vacío${RESET}"
         return
     fi
     
-    if  es_numero "$nombre"; then
-        echo "Los equipos no pueden ser números"
+    if es_numero "$nombre"; then
+        echo -e "${ROJO}Los equipos no pueden ser números${RESET}"
         return
     fi
 
     cantidad=$(grep "^EQUIPO:" "$ARCHIVO" | wc -l)
 
     if [ "$cantidad" -ge 15 ]; then
-        echo "Máximo de equipos alcanzado"
+        echo -e "${ROJO}Máximo de equipos alcanzado${RESET}"
         return
     fi
 
     if existe_equipo "$nombre"; then
-        echo "El equipo ya existe"
+        echo -e "${ROJO}El equipo ya existe${RESET}"
     else
         echo "EQUIPO:$nombre" >> "$ARCHIVO"
-        echo "Equipo registrado correctamente"
+        echo -e "${VERDE}Equipo registrado correctamente${RESET}"
     fi
 }
 
@@ -62,54 +77,53 @@ registrar_partido() {
     read -p "Goles equipo 1: " g1
 
         if ! existe_equipo "$eq1" && ! es_numero "$g1"; then
-            echo "Ningún dato es válido"
+            echo -e "${ROJO}Ningún dato es válido${RESET}"
             return
         fi
 
         if ! existe_equipo "$eq1"; then
-            echo "Equipo 1 no existe"
+            echo -e "${ROJO}Equipo 1 no existe${RESET}"
             return
         fi
 
         if ! es_numero "$g1"; then
-            echo "Los goles deben ser números"
+            echo -e "${ROJO}Los goles deben ser números${RESET}"
             return
         fi
+
     read -p "Equipo 2: " eq2
     read -p "Goles equipo 2: " g2
 
         if ! existe_equipo "$eq2" && ! es_numero "$g2"; then
-            echo "Ningún dato es válido"
+            echo -e "${ROJO}Ningún dato es válido${RESET}"
             return
         fi
 
         if ! existe_equipo "$eq2"; then
-            echo "Equipo 2 no existe"
+            echo -e "${ROJO}Equipo 2 no existe${RESET}"
             return
         fi
 
         if ! es_numero "$g2"; then
-            echo "Los goles deben ser números"
+            echo -e "${ROJO}Los goles deben ser números${RESET}"
             return
         fi
 
-
     if [ "$eq1" = "$eq2" ]; then
-    echo "Un equipo no puede jugar contra sí mismo"
-    return
+        echo -e "${ROJO}Un equipo no puede jugar contra sí mismo${RESET}"
+        return
     fi
 
-
     echo "PARTIDO:$eq1 vs $eq2 ($g1 - $g2)" >> "$ARCHIVO"
-    echo "Partido registrado correctamente"
+    echo -e "${VERDE}Partido registrado correctamente${RESET}"
 }
 
 ver_historial() {
-    echo "----- HISTORIAL -----"
+    echo -e "${BLANCO}----- HISTORIAL -----${RESET}"
     partidos=$(grep "^PARTIDO:" "$ARCHIVO")
 
     if [ -z "$partidos" ]; then
-        echo "No hay partidos registrados"
+         echo "No hay partidos registrados"
     else
         echo "$partidos" | cut -d":" -f2 | nl
     fi
@@ -119,14 +133,14 @@ buscar_equipo() {
     read -p "Nombre del equipo: " nombre
 
     if [ -z "$nombre" ]; then
-        echo "No puede estar vacío"
+        echo -e "${ROJO}No puede estar vacío${RESET}"
         return
     fi
 
     if existe_equipo "$nombre"; then
-        echo "El equipo está registrado"
+        echo -e "${VERDE}El equipo está registrado${RESET}"
     else
-        echo "El equipo no existe"
+        echo -e "${ROJO}El equipo no existe${RESET}"
     fi
 }
 
@@ -137,7 +151,7 @@ cantidad_partidos() {
 
 menu() {
     echo ""
-    echo "===== GESTOR DEL MUNDIAL ====="
+    echo -e "${BLANCO}===== GESTOR DEL MUNDIAL =====${RESET}"
     echo "1. Listar equipos"
     echo "2. Mostrar campeón"
     echo "3. Registrar equipo"
@@ -169,7 +183,8 @@ echo "=========== Autores ===========
 =  Brian del Pino (329242)    =
 =  Facundo Martinez (292207)  =
 =                             =
-===============================";  break ;;
-        *) echo "Opción inválida" ;;
+==============================="; break ;;
+        *) echo -e "${ROJO}Opción inválida${RESET}" ;;
     esac
+done
 done
