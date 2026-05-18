@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Colores
 ROJO='\033[1;31m'
 VERDE='\033[1;32m'
 AMARILLO='\033[1;33m'
@@ -37,7 +36,6 @@ mostrar_campeon() {
     campeon=$(grep "^CAMPEON:" "$ARCHIVO" | cut -d":" -f2 | tr '[:lower:]' '[:upper:]')
 
     if [ "$campeon" = "ARGENTINA" ]; then
-        # A=blanca R=celeste G=blanca E=celeste N=amarilla T=blanca I=celeste N=blanca A=celeste
         echo -e "\n        ${BLANCO}A${RESET}${CELESTE}R${RESET}${BLANCO}G${RESET}${CELESTE}E${RESET}${AMARILLO}N${RESET}${BLANCO}T${RESET}${CELESTE}I${RESET}${BLANCO}N${RESET}${CELESTE}A${RESET}"
     else
         echo "$campeon"
